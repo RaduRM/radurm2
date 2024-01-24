@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formular de Inregistrare</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        form {
+            width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+
+        input[type="submit"] {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+    <form id="registrationForm" onsubmit="return validateForm()">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <br>
+        <span id="emailError" class="error"></span>
+        <br>
+
+        <label for="password">Parolă:</label>
+        <input type="password" id="password" name="password" required>
+        <br>
+        <span id="passwordError" class="error"></span>
+        <br>
+
+        <label for="confirmPassword">Confirmare Parolă:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <br>
+        <span id="confirmPasswordError" class="error"></span>
+        <br>
+
+        <input type="submit" value="Înregistrare">
+    </form>
+
+    <script>
+        function validateForm() {
+            // Resetarea mesajelor de eroare
+            document.getElementById("emailError").innerHTML = "";
+            document.getElementById("passwordError").innerHTML = "";
+            document.getElementById("confirmPasswordError").innerHTML = "";
+
+            // Validarea adresei de email
+            var email = document.getElementById("email").value;
+            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById("emailError").innerHTML = "Introduceți o adresă de email validă.";
+                return false;
+            }
+
+            // Validarea parolei
+            var password = document.getElementById("password").value;
+            var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!passwordRegex.test(password)) {
+                document.getElementById("passwordError").innerHTML = "Parola trebuie să conțină cel puțin 8 caractere, o literă mică, o literă mare, un număr și un caracter special.";
+                return false;
+            }
+
+            // Validarea confirmarii parolei
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            if (password !== confirmPassword) {
+                document.getElementById("confirmPasswordError").innerHTML = "Parola și confirmarea parolei nu se potrivesc.";
+                return false;
+            }
+
+            // Returneaza true daca toate validarile au trecut
+            return true;
+        }
+    </script>
+
+</body>
+</html>
