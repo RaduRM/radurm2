@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #todoList {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li.completed {
+            background-color: #e0e0e0;
+        }
+
+        input[type="text"] {
+            padding: 8px;
+            width: 70%;
+        }
+
+        button {
+            padding: 8px;
+            cursor: pointer;
+        }
+    </style>
+    <title>To-Do List</title>
+</head>
+<body>
+    <div id="todoList">
+        <h2>To-Do List</h2>
+        <input type="text" id="taskInput" placeholder="Adaugati o sarcina">
+        <button onclick="addTask()">Adauga</button>
+        <ul id="tasks"></ul>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTasks();
+        });
+
+        function addTask() {
+            var taskInput = document.getElementById('taskInput');
+            var taskText = taskInput.value.trim();
+
+            if (taskText === '') {
+                alert('Introduceti o sarcina valida!');
+                return;
+            }
+
+            var tasks = getTasks();
+            tasks.push({ text: taskText, completed: false });
+            saveTasks(tasks);
+            loadTasks();
+
+            taskInput.value = '';
+        }
+
+        function loadTasks() {
+            var tasks = getTasks();
+            var tasksList = document.getElementById('tasks');
+            tasksList.innerHTML = '';
+
+            tasks.forEach(function(task, index) {
+                var li = document.createElement('li');
+                li.innerHTML = '<input type="checkbox" onchange="toggleTask(' + index + ')" ' + (task.completed ? 'checked' : '') + '> ' +
+                                '<span class="' + (task.completed ? 'completed' : '') + '">' + task.text + '</span>' +
+                                '<input type="text" value="' + task.text + '" style="display:none;">' +
+                                '<button onclick="editTask(' + index + ')">Editează</button>' +
+                                '<button onclick="deleteTask(' + index + ')">Șterge</button>';
+                tasksList.appendChild(li);
+            });
+        }
+
+        function toggleTask(index) {
+            var tasks = getTasks();
+            tasks[index].completed = !tasks[index].completed;
+            saveTasks(tasks);
+            loadTasks();
+        }
+
+        function editTask(index) {
+            var tasks = getTasks();
+            var li = document.getElementById('tasks').getElementsByTagName('li')[index];
+            var span = li.getElementsByTagName('span')[0];
+            var input = li.getElementsByTagName('input')[1];
+
+            if (input.style.display === 'none') {
+                span.style.display = 'none';
+                input.style.display = 'inline-block';
+                input.focus();
+            } else {
+                span.style.display = 'inline-block';
+                input.style.display = 'none';
+
+                if (input.value.trim() !== '') {
+                    tasks[index].text = input.value.trim();
+                    saveTasks(tasks);
+                    loadTasks();
+                } else {
+                    alert('Introduceti o valoare valida pentru editare!');
+                }
+            }
+        }
+
+        function deleteTask(index) {
+            var tasks = getTasks();
+            tasks.splice(index, 1);
+            saveTasks(tasks);
+            loadTasks();
+        }
+
+        function getTasks() {
+            var tasks = localStorage.getItem('tasks');
+            return tasks ? JSON.parse(tasks) : [];
+        }
+
+        function saveTasks(tasks) {
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+    </script>
+</body>
+</html>
